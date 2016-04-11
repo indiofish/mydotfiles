@@ -123,9 +123,6 @@ imap jj <esc>
 map N Nzz
 map n nzz
 map * *zz
-"H to home, L to end
-map H ^
-map L $
 "make Y act like D or C; from the cursor to the EOL
 map Y y$
 "indenting maintains visual area 
