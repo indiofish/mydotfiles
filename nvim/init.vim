@@ -172,9 +172,6 @@ let g:AutoPairsFlyMode = 0
 au BufEnter *.rkt let b:AutoPairs 
       \ = {"(": ")","{": "}", '"': '"', "[": "]"}
 
-"syntastic configuration
-highlight SyntasticErrorSign ctermfg=0 ctermbg=168
-
 "NERDTree configuration
 map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeQuitOnOpen=1
