@@ -1,0 +1,2 @@
+# mybash
+bashrc and stuffs
