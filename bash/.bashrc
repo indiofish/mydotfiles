@@ -83,7 +83,10 @@ function mydir {
 }
 #PROMPT_DIRTRIM=3
 if [ "$color_prompt" = yes ]; then
-  PS1='\[\e[0;36m\]\u@\H\[\e[m\] \[\e[0;35m\]$(dir_chomp "$PWD" 0)\[\e[38;5;11m\]$(parse_git_branch) \[\e[0;34m\]\$\[\e[m\] \[\e[0;37m\]'
+  #PS1='\[\e[0;36m\]\u@\H\[\e[m\] \[\e[0;35m\]$(dir_chomp "$PWD" 0)\[\e[38;5;11m\]$(parse_git_branch) \[\e[0;34m\]\$\[\e[m\] \[\e[0;37m\]'
+  PS1='\[\e[7m\e[38;5;247m\] $(dir_chomp "$PWD" 0) \\
+\[\e[27m\e[38;5;247m\]$(parse_git_branch) \\
+\[\e[38;5;161m\]>\[\e[m\] \[\e[0;37m\]'
 else
   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -138,7 +141,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-source $HOME/.tmux_complete.sh 
+source $HOME/.simple_bash_compl_tmux.sh 
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.opam/4.02.3/bin"
