@@ -7,7 +7,7 @@ Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle'}
 Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 Plug 'garbas/vim-snipmate',{ 'on': []} | Plug 'indiofish/vim-snippets'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-fugitive'
+"Plug 'tpope/vim-fugitive'
 Plug 'junegunn/Goyo.vim'
 Plug 'vim-scripts/indentpython.vim', {'for': 'python'}
 Plug 'christoomey/vim-tmux-navigator'
@@ -16,6 +16,7 @@ Plug 'Shougo/deoplete.nvim' | Plug 'Shougo/neoinclude.vim'
 Plug 'jvoorhis/coq.vim', {'for': 'coq'}
 Plug 'the-lambda-church/coquille', {'for': 'coq'} | Plug 'def-lkb/vimbufsync'
 Plug 'tomasr/molokai'
+"Plug 'gilgigilgil/anderson.vim'
 "dependencies
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
@@ -73,22 +74,24 @@ let loaded_netrwPlugin = 1
 let &titleold = getcwd()
 
 "COLOR CONFIGURATION
+"let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 augroup load_colors
   au!
   au ColorScheme * set background=dark
   "au ColorScheme * hi Normal ctermbg=234
-  au ColorScheme * hi Normal ctermbg=None
+  "au ColorScheme * hi Normal ctermbg=None
   au ColorScheme * hi NonText ctermfg=234 ctermbg = None
   "au ColorScheme * hi Normal ctermfg = 254
   au ColorScheme * hi CursorLineNr ctermfg=117 cterm=bold 
   au ColorScheme * hi LineNr ctermfg=250 ctermbg=none
   au ColorScheme * hi Pmenu ctermfg=250 ctermbg=240
-  au ColorScheme * hi PmenuSel ctermfg=11 ctermbg=25
+  au ColorScheme * hi PmenuSel ctermfg=227 ctermbg=25
   au ColorScheme * hi WildMenu ctermbg=238
   au ColorScheme * hi StatusLine ctermbg=238 ctermfg=253 cterm=bold
   "au ColorScheme * hi StatusLineNC ctermfg=244 ctermbg=232
 augroup END
 color molokai
+"color anderson
 
 let python_highlight_space_errors=0
 let python_highlight_all=1
@@ -191,11 +194,13 @@ inoremap <silent><expr><Tab> snipMate#CanBeTriggered()?
 
 
 "Neomake configuration
-let g:neomake_python_enabled_makers = ['flake8']
+let g:neomake_python_enabled_makers = ['python', 'flake8']
+let g:neomake_python_python_exe = 'python3'
 let g:neomake_java_javac_maker = {
   \'args': ['-Xlint'],
   \}
 autocmd BufWritePost * Neomake
+let g:neomake_verbose = 0
 augroup neomake
 augroup END
 
@@ -211,11 +216,13 @@ let g:tagbar_compact = 1
 let g:tagbar_map_showproto = "p"
 
 "AUTOCMDS
-
+let g:coquille_auto_move=1
 augroup coq
   au!
   au BufEnter,BufNewFile *.v CoqLaunch
   au BufEnter,BufNewFile *.v map <leader>q :qa<cr>
+  au BufEnter,BufNewFile *.v map J :CoqNext<cr>
+  au BufEnter,BufNewFile *.v map K :CoqUndo<cr>
 augroup END
 augroup format
   au!
