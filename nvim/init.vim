@@ -131,6 +131,7 @@ map Y y$
 "indenting maintains visual area 
 vnoremap > >gv
 vnoremap < <gv
+
 tnoremap <Esc> <C-\><C-n>
 
 "move through splits easily
@@ -248,6 +249,11 @@ augroup lazyload_plugins
   au!
     au InsertEnter * call plug#load('vim-snipmate')
     au BufWritePre * call plug#load('neomake')
+augroup END
+
+augroup enter_terminal
+  au!
+    au TermOpen * setlocal nonumber norelativenumber
 augroup END
 
 nmap <silent><space>r :10sp<CR>:Run<CR>i
