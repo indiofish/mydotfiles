@@ -141,7 +141,9 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-source $HOME/.simple_bash_compl_tmux.sh 
+
+#source $HOME/.simple_bash_compl_tmux.sh 
+source $HOME/.tmux_complete.sh
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.opam/4.02.3/bin"

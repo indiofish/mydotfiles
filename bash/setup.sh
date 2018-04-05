@@ -9,5 +9,4 @@ rm -rf ~/.inputrc
 cp .bashrc ~/
 cp .bash_aliases ~/
 cp .inputrc ~/
-cp ./.tmux_complete.sh ~/
 cp ./.bash_profile ~/
