@@ -71,7 +71,7 @@ augroup my_neomake_signs
   autocmd ColorScheme *
         \ hi LineNr ctermfg=250 ctermbg=none |
         \ hi Normal ctermbg=None |
-        \ hi NonText ctermfg=234 ctermbg = None |
+        \ hi NonText ctermbg = None |
         \ hi CursorLineNr ctermfg=117 cterm=bold  |
         \ hi Pmenu ctermfg=250 ctermbg=240 |
         \ hi PmenuSel ctermfg=11 ctermbg=25 |
@@ -182,15 +182,20 @@ let b:clang2_orig_maps={}
 imap <silent><expr><Tab> neosnippet#expandable_or_jumpable()?
       \ "\<Plug>(neosnippet_expand_or_jump)" :
       \ pumvisible() ? "\<C-y>" : "\<TAB>"
+smap <silent><expr><Tab> neosnippet#expandable_or_jumpable()?
+      \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+"give snippets the highest rank
+call deoplete#custom#source('neosnippet', 'rank', 999)
 if has('conceal')
     set conceallevel=2 concealcursor=niv
 endif
 
 "Neomake configuration
 let g:neomake_python_enabled_makers = ['python', 'flake8']
-let g:neomake_python_python_exe = 'python'
+let g:neomake_c_enabled_makers = ['clang']
+let g:neomake_python_python_exe = 'python3'
 let g:neomake_python_flake8_maker= {
-  \'args':['--format=default', '--ignore=E231,E302'],
+  \'args':['--format=default', '--ignore=E2,E302,W2'],
   \}
 let g:neomake_java_javac_maker = {
   \'args': ['-Xlint'],
@@ -251,12 +256,12 @@ augroup enter_terminal
     au TermOpen term://* startinsert
 augroup END
 
-nmap <silent><space>r :10sp<CR>:Run<CR>i
+nmap <silent><space>r :10sp<CR>:Run<CR>
 au BufEnter *.v nmap <silent><space>r :Run<CR>
-nmap <f5> :Run<CR>i
+nmap <f5> :Run<CR>
 augroup Run
   au!
-  au Bufenter *.py command! Run te python %
+  au Bufenter *.py command! Run te python3 %
 
   au Bufenter *.c command! Run te gcc % -lm && ./a.out
   au Bufenter *.c set makeprg=gcc\ %\ -lm
