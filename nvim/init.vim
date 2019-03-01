@@ -257,7 +257,7 @@ nmap <silent><space>r :10sp<CR>:Run<CR>i
 au BufEnter *.v nmap <silent><space>r :Run<CR>
 nmap <f5> :Run<CR>i
 augroup Run
-  au
+  au!
   au Bufenter *.py command! Run te python %
 
   au Bufenter *.c command! Run te gcc % -lm && ./a.out
