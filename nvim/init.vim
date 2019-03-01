@@ -3,31 +3,26 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'indiofish/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'benekastah/neomake', {'on': []}
-Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle'}
+"Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle'}
 Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
-Plug 'garbas/vim-snipmate',{ 'on': []} | Plug 'indiofish/vim-snippets'
+Plug 'indiofish/deoplete-clang2'
+Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
+Plug 'Shougo/deoplete.nvim', {'do': 'UpdateRemotePlugins'}
+Plug 'Shougo/neco-syntax'
+Plug 'Shougo/neoinclude.vim'
 Plug 'tpope/vim-surround'
-"Plug 'tpope/vim-fugitive'
-Plug 'junegunn/Goyo.vim'
-Plug 'vim-scripts/indentpython.vim', {'for': 'python'}
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'Shougo/deoplete.nvim' | Plug 'Shougo/neoinclude.vim'
-        \ | Plug 'Shougo/neco-syntax'
-Plug 'jvoorhis/coq.vim', {'for': 'coq'}
-Plug 'the-lambda-church/coquille', {'for': 'coq'} | Plug 'def-lkb/vimbufsync'
 Plug 'tomasr/molokai'
-"Plug 'gilgigilgil/anderson.vim'
-"dependencies
-Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'tomtom/tlib_vim'
 call plug#end()
 
 "BASIC SETTINGS
 "syntax on
 set fileencodings=UTF-8
 set noswapfile
+set inccommand=nosplit
 set shortmess=aoc
 set ignorecase
+set clipboard+=unnamedplus
 set smartcase
 set infercase
 set autowrite
@@ -38,12 +33,13 @@ set mouse=n
 set mousehide
 set hidden "keeps buffer
 set viminfo=:20,'20,@0,<0,/0
+set shell=bash
+"set shellcmdflag=-c
 
 set splitright "when opening splits, they go right
 set splitbelow "and below
 set autochdir
 set smartindent
-set clipboard=unnamed	"yank to the system register (+) by default
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
@@ -66,36 +62,31 @@ set completeopt+=noinsert
 set wildignorecase
 set wildmode=longest:full,full
 set wildignore=*.o,*~,*.pyc,*.class,*.zip,*.out
-"set tags=./tags
-"set tags+=~/school/2016-1/os/os-team8/linux-3.10-sc7730/tags
-"cs add ~/school/2016-1/os/os-team8/linux-3.10-sc7730/cscope.out
 let loaded_matchparen = 1
 let loaded_netrwPlugin = 1
 let &titleold = getcwd()
 
 "COLOR CONFIGURATION
-"let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-augroup load_colors
+let $NVIM_TUI_ENABLE_TRUE_COLOR=0
+augroup my_neomake_signs
   au!
-  au ColorScheme * set background=dark
-  "au ColorScheme * hi Normal ctermbg=234
-  "au ColorScheme * hi Normal ctermbg=None
-  au ColorScheme * hi NonText ctermfg=234 ctermbg = None
-  "au ColorScheme * hi Normal ctermfg = 254
-  au ColorScheme * hi CursorLineNr ctermfg=117 cterm=bold 
-  au ColorScheme * hi LineNr ctermfg=250 ctermbg=none
-  au ColorScheme * hi Pmenu ctermfg=250 ctermbg=240
-  au ColorScheme * hi PmenuSel ctermfg=227 ctermbg=25
-  au ColorScheme * hi WildMenu ctermbg=238
-  au ColorScheme * hi StatusLine ctermbg=238 ctermfg=253 cterm=bold
-  "au ColorScheme * hi StatusLineNC ctermfg=244 ctermbg=232
-augroup END
+  autocmd ColorScheme *
+        \ hi LineNr ctermfg=250 ctermbg=none |
+        \ hi Normal ctermbg=None |
+        \ hi NonText ctermfg=234 ctermbg = None |
+        \ hi CursorLineNr ctermfg=117 cterm=bold  |
+        \ hi Pmenu ctermfg=250 ctermbg=240 |
+        \ hi PmenuSel ctermfg=11 ctermbg=25 |
+        \ hi WildMenu ctermbg=238 |
+        \ hi StatusLine ctermbg=238 ctermfg=253 cterm=bold |
+        \ hi NeomakeErrorSign ctermfg=red |
+        \ hi NeomakeWarningSign ctermfg=yellow |
+augroup End
 color molokai
-"color anderson
+set background=dark
 
 let python_highlight_space_errors=0
 let python_highlight_all=1
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 
 "STATUSLINE CONFIGURATION
 set statusline=\[%<%F\] "file path
@@ -111,7 +102,7 @@ nmap <silent><leader>w :w!<cr>
 nmap <silent><leader>q :q<cr>
 "Toggle paste mode on and off
 map <silent><leader>pp :setlocal paste!<cr>
-noremap <leader>l :ls<CR>:b
+noremap <leader>l :ls<CR>:b 
 noremap <leader>gc :Gcommit -m ""<left>
 noremap <leader>gw :Gwrite<CR>
 noremap <leader>gp :Gpush<CR>
@@ -186,21 +177,26 @@ let NERDTreeWinSize=20
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#enable_smart_case = 1
 let g:deoplete#auto_complete_start_length = 3
-let g:deoplete#omni#input_patterns = {}
+let g:deoplete#omni#input_patterns={}
 let g:deoplete#omni#input_patterns.python = '[^. *\t]\.\w*'
-let g:deoplete#omni#input_patterns.java = '[^. *\t]\.\w*'
-inoremap <silent><expr><Tab> snipMate#CanBeTriggered()? 
-      \ "\<C-R>=snipMate#TriggerSnippet()\<CR>" :
+"For some dumb reason, clang2 plugin tries to remaps keys but pls don't.
+let b:clang2_orig_maps={}
+imap <silent><expr><Tab> neosnippet#expandable_or_jumpable()?
+      \ "\<Plug>(neosnippet_expand_or_jump)" :
       \ pumvisible() ? "\<C-y>" : "\<TAB>"
-
+if has('conceal')
+    set conceallevel=2 concealcursor=niv
+endif
 
 "Neomake configuration
 let g:neomake_python_enabled_makers = ['python', 'flake8']
-let g:neomake_python_python_exe = 'python3'
+let g:neomake_python_python_exe = 'python'
 let g:neomake_java_javac_maker = {
   \'args': ['-Xlint'],
   \}
-autocmd BufWritePost * Neomake
+let g:neomake_error_sign = {'text': 'X', 'texthl': 'NeomakeErrorSign'}
+let g:neomake_warning_sign = {'text': '!', 'texthl': 'NeomakeWarningSign'}
+
 let g:neomake_verbose = 0
 augroup neomake
 augroup END
@@ -247,21 +243,22 @@ augroup END
 
 augroup lazyload_plugins
   au!
-    au InsertEnter * call plug#load('vim-snipmate')
     au BufWritePre * call plug#load('neomake')
+    au BufWritePre * call neomake#configure#automake('nw', 500)
 augroup END
 
 augroup enter_terminal
   au!
     au TermOpen * setlocal nonumber norelativenumber
+    au TermOpen term://* startinsert
 augroup END
 
 nmap <silent><space>r :10sp<CR>:Run<CR>i
 au BufEnter *.v nmap <silent><space>r :Run<CR>
 nmap <f5> :Run<CR>i
 augroup Run
-  au!
-  au Bufenter *.py command! Run te python3 %
+  au
+  au Bufenter *.py command! Run te python %
 
   au Bufenter *.c command! Run te gcc % -lm && ./a.out
   au Bufenter *.c set makeprg=gcc\ %\ -lm
@@ -284,24 +281,3 @@ function! MyDir()
   let cwd = substitute(getcwd(),'/home/\h\w*',"~","")
   return cwd . "/"
 endfunction
-
-function! s:goyo_enter()
-  let b:quitting = 0
-  let b:quitting_bang = 0
-  autocmd QuitPre <buffer> let b:quitting = 1
-  cabbrev <buffer> q! let b:quitting_bang = 1 <bar> q!
-endfunction
-
-function! s:goyo_leave()
-  " Quit Vim if this is the only remaining buffer
-  if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
-    if b:quitting_bang
-      qa!
-    else
-      qa
-    endif
-  endif
-endfunction
-
-autocmd User GoyoEnter call <SID>goyo_enter()
-autocmd User GoyoLeave call <SID>goyo_leave()
