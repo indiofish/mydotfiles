@@ -2,10 +2,10 @@ language messages C
 call plug#begin('~/.config/nvim/plugged')
 Plug 'indiofish/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
-Plug 'benekastah/neomake', {'on': []}
+Plug 'benekastah/neomake'
 "Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle'}
 Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
-Plug 'indiofish/deoplete-clang2'
+Plug 'indiofish/deoplete-clang2', {'for': ['c', 'cpp']}
 Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
 Plug 'Shougo/deoplete.nvim', {'do': 'UpdateRemotePlugins'}
 Plug 'Shougo/neco-syntax'
@@ -33,8 +33,6 @@ set mouse=n
 set mousehide
 set hidden "keeps buffer
 set viminfo=:20,'20,@0,<0,/0
-set shell=bash
-"set shellcmdflag=-c
 
 set splitright "when opening splits, they go right
 set splitbelow "and below
@@ -67,7 +65,7 @@ let loaded_netrwPlugin = 1
 let &titleold = getcwd()
 
 "COLOR CONFIGURATION
-let $NVIM_TUI_ENABLE_TRUE_COLOR=0
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 augroup my_neomake_signs
   au!
   autocmd ColorScheme *
@@ -191,15 +189,15 @@ endif
 "Neomake configuration
 let g:neomake_python_enabled_makers = ['python', 'flake8']
 let g:neomake_python_python_exe = 'python'
+let g:neomake_python_flake8_maker= {
+  \'args':['--format=default', '--ignore=E231,E302'],
+  \}
 let g:neomake_java_javac_maker = {
   \'args': ['-Xlint'],
   \}
 let g:neomake_error_sign = {'text': 'X', 'texthl': 'NeomakeErrorSign'}
 let g:neomake_warning_sign = {'text': '!', 'texthl': 'NeomakeWarningSign'}
-
-let g:neomake_verbose = 0
-augroup neomake
-augroup END
+call neomake#configure#automake('nw', 500)
 
 "GOYO jump to last cursor position upon exit.
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
@@ -257,7 +255,7 @@ nmap <silent><space>r :10sp<CR>:Run<CR>i
 au BufEnter *.v nmap <silent><space>r :Run<CR>
 nmap <f5> :Run<CR>i
 augroup Run
-  au
+  au!
   au Bufenter *.py command! Run te python %
 
   au Bufenter *.c command! Run te gcc % -lm && ./a.out
