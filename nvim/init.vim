@@ -13,6 +13,7 @@ Plug 'Shougo/neoinclude.vim'
 Plug 'tpope/vim-surround'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tomasr/molokai'
+Plug 'dracula/vim', {'as': 'dracula'}
 call plug#end()
 
 "BASIC SETTINGS
@@ -70,7 +71,7 @@ augroup my_neomake_signs
   au!
   autocmd ColorScheme *
         \ hi LineNr ctermfg=250 ctermbg=none |
-        \ hi Normal ctermbg=None |
+        \ hi Normal ctermbg=236 |
         \ hi NonText ctermbg = None |
         \ hi CursorLineNr ctermfg=117 cterm=bold  |
         \ hi Pmenu ctermfg=250 ctermbg=240 |
@@ -80,7 +81,7 @@ augroup my_neomake_signs
         \ hi NeomakeErrorSign ctermfg=red |
         \ hi NeomakeWarningSign ctermfg=yellow |
 augroup End
-color molokai
+color dracula
 set background=dark
 
 let python_highlight_space_errors=0
