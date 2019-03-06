@@ -4,15 +4,15 @@ Plug 'indiofish/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'benekastah/neomake'
 "Plug 'scrooloose/nerdtree', {'on': 'NERDTreeToggle'}
-Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
+"Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 Plug 'indiofish/deoplete-clang2', {'for': ['c', 'cpp']}
 Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
-Plug 'Shougo/deoplete.nvim', {'do': 'UpdateRemotePlugins'}
+Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
 Plug 'Shougo/neco-syntax'
 Plug 'Shougo/neoinclude.vim'
 Plug 'tpope/vim-surround'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'tomasr/molokai'
+"Plug 'tomasr/molokai'
 Plug 'dracula/vim', {'as': 'dracula'}
 call plug#end()
 
@@ -173,7 +173,9 @@ let NERDTreeShowHidden=1
 let NERDTreeWinSize=20
 
 "deoplete configuration
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 0
+autocmd! InsertEnter * call deoplete#enable()
+let g:python3_host_prog = 'python3'
 let g:deoplete#enable_smart_case = 1
 let g:deoplete#auto_complete_start_length = 3
 let g:deoplete#omni#input_patterns={}
@@ -203,7 +205,12 @@ let g:neomake_java_javac_maker = {
   \}
 let g:neomake_error_sign = {'text': 'X', 'texthl': 'NeomakeErrorSign'}
 let g:neomake_warning_sign = {'text': '!', 'texthl': 'NeomakeWarningSign'}
-call neomake#configure#automake('nw', 500)
+
+if OnBattery()
+  call neomake#configure#automake('w')
+else
+  call neomake#configure#automake('nw', 1000)
+endif
 
 "GOYO jump to last cursor position upon exit.
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
@@ -284,4 +291,8 @@ function! MyDir()
   " parse home directory and the usr name and substitute to ~/
   let cwd = substitute(getcwd(),'/home/\h\w*',"~","")
   return cwd . "/"
+endfunction
+
+function! OnBattery()
+  return readfile('/sys/class/power_supply/ADP1/online') == ['0']
 endfunction
