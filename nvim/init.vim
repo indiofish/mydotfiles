@@ -97,8 +97,8 @@ set statusline+=%=\ %04l/%04L      "flags and LineNum
 "map space to a leader key.
 map <Space> <leader>
 "easier saving & quitting
-nmap <silent><leader>w :w!<cr>
-nmap <silent><leader>q :q<cr>
+"nmap <silent><leader>w :w!<cr>
+"nmap <silent><leader>q :q<cr>
 "Toggle paste mode on and off
 map <silent><leader>pp :setlocal paste!<cr>
 noremap <leader>l :ls<CR>:b 
@@ -193,6 +193,9 @@ if has('conceal')
     set conceallevel=2 concealcursor=niv
 endif
 
+"neosnippet hides characters in latex
+let g:tex_conceal = ""
+
 "Neomake configuration
 let g:neomake_python_enabled_makers = ['python', 'flake8']
 let g:neomake_c_enabled_makers = ['clang']
@@ -206,6 +209,9 @@ let g:neomake_java_javac_maker = {
 let g:neomake_error_sign = {'text': 'X', 'texthl': 'NeomakeErrorSign'}
 let g:neomake_warning_sign = {'text': '!', 'texthl': 'NeomakeWarningSign'}
 
+function! OnBattery()
+  return readfile('/sys/class/power_supply/ADP1/online') == ['0']
+endfunction
 if OnBattery()
   call neomake#configure#automake('w')
 else
@@ -291,8 +297,4 @@ function! MyDir()
   " parse home directory and the usr name and substitute to ~/
   let cwd = substitute(getcwd(),'/home/\h\w*',"~","")
   return cwd . "/"
-endfunction
-
-function! OnBattery()
-  return readfile('/sys/class/power_supply/ADP1/online') == ['0']
 endfunction
