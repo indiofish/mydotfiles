@@ -40,6 +40,8 @@ case "$TERM" in
   screen-256color | xterm-color) color_prompt=yes;;
 esac
 
+
+
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
@@ -55,6 +57,12 @@ if [ -n "$force_color_prompt" ]; then
     color_prompt=
   fi
 fi
+
+function runmatlab() {
+  local fn=$1
+  local f="${fn%.*}"
+  matlab -nodesktop -nosplash -r "try, $f; catch e, disp(getReport(e,'extended')), end, exit;"
+}
 function parse_git_branch () {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\ <\1>/'
 }
@@ -65,12 +73,12 @@ function dir_chomp () {
   while ((s>$2&&c<${#p[*]}-1))
   do
     d=${p[c]}
-    n=2;
+    n=3;
     #[[ $d = .* ]]&&n=2
     if test ${#d} -gt $n 
     then
       #append + if shortened
-      p[c++]=${d:0:n}'+'
+      p[c++]=${d:0:n}'..'
     else
       p[c++]=${d:0:n}
     fi
@@ -83,10 +91,11 @@ function mydir {
 }
 #PROMPT_DIRTRIM=3
 if [ "$color_prompt" = yes ]; then
-  #PS1='\[\e[0;36m\]\u@\H\[\e[m\] \[\e[0;35m\]$(dir_chomp "$PWD" 0)\[\e[38;5;11m\]$(parse_git_branch) \[\e[0;34m\]\$\[\e[m\] \[\e[0;37m\]'
-  PS1='\[\e[7m\e[38;5;247m\] $(dir_chomp "$PWD" 0) \\
+  #PS1='\[\e[0;36m\ \u@\H\[\e[m\] \[\e[0;35m\]$(dir_chomp "$PWD" 0)\[\e[38;5;11m\]$(parse_git_branch) \[\e[0;34m\]\$\[\e[m\] \[\e[0;37m\]'
+  #PS1='\[\e[48;5;132m\e[38;5;253m\] $(dir_chomp "$PWD" 0) \e[0m\\
+  PS1='\[\e[38;5;176m\] $(dir_chomp "$PWD" 0)\e[0m\\
 \[\e[27m\e[38;5;247m\]$(parse_git_branch) \\
-\[\e[38;5;161m\]>\[\e[m\] \[\e[0;37m\]'
+\[\e[38;5;169m\]>\[\e[m\] \[\e[0;37m\]'
 else
   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -141,9 +150,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-#source $HOME/.simple_bash_compl_tmux.sh 
-source $HOME/.tmux_complete.sh
+source $HOME/.simple_bash_compl_tmux.sh 
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.opam/4.02.3/bin"
@@ -151,3 +158,12 @@ export PATH="$PATH:$HOME/workspace/opt/tizen-toolchain-4.9~git-i686_armv7l-tizen
 #export PATH="$PATH:$HOME/.local/bin/vim74/bin"
 export OCAML_LD_LIBRARY_PATH="$HOME/.opam/4.02.3/lib/stublibs"
 export LS_COLORS
+
+# if virtual env on, use it
+if [ -n "$VIRTUAL_ENV" ]; then
+  source "$VIRTUAL_ENV"/bin/activate;
+fi
+
+if [ -n "$TMUX" ]; then
+    tmux set-environment VIRTUAL_ENV $VIRTUAL_ENV
+fi
