@@ -93,9 +93,9 @@ function mydir {
 if [ "$color_prompt" = yes ]; then
   #PS1='\[\e[0;36m\ \u@\H\[\e[m\] \[\e[0;35m\]$(dir_chomp "$PWD" 0)\[\e[38;5;11m\]$(parse_git_branch) \[\e[0;34m\]\$\[\e[m\] \[\e[0;37m\]'
   #PS1='\[\e[48;5;132m\e[38;5;253m\] $(dir_chomp "$PWD" 0) \e[0m\\
-  PS1='\[\e[38;5;176m\] $(dir_chomp "$PWD" 0)\e[0m\\
+  PS1='[\[\e[1;35m\] $(dirs +0)\e[0m ]\\
 \[\e[27m\e[38;5;247m\]$(parse_git_branch) \\
-\[\e[38;5;169m\]>\[\e[m\] \[\e[0;37m\]'
+\[\e[1;31m\]\n→\[\e[m\] \[\e[0;37m\]'
 else
   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
