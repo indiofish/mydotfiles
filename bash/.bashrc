@@ -150,7 +150,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-source $HOME/.simple_bash_compl_tmux.sh 
+#source $HOME/.simple_bash_compl_tmux.sh 
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.opam/4.02.3/bin"
@@ -159,11 +159,12 @@ export PATH="$PATH:$HOME/workspace/opt/tizen-toolchain-4.9~git-i686_armv7l-tizen
 export OCAML_LD_LIBRARY_PATH="$HOME/.opam/4.02.3/lib/stublibs"
 export LS_COLORS
 
+if [[ -n "$TMUX" ]]; then
+    tmux set-environment VIRTUAL_ENV $VIRTUAL_ENV
+fi
+
 # if virtual env on, use it
 if [ -n "$VIRTUAL_ENV" ]; then
   source "$VIRTUAL_ENV"/bin/activate;
 fi
 
-if [ -n "$TMUX" ]; then
-    tmux set-environment VIRTUAL_ENV $VIRTUAL_ENV
-fi
