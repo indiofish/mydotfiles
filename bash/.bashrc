@@ -168,3 +168,8 @@ if [ -n "$VIRTUAL_ENV" ]; then
   source "$VIRTUAL_ENV"/bin/activate;
 fi
 
+
+# start or attach to 'main' upon bash login
+if command -v tmux &> /dev/null && [ -n "$PS1"  ] && [[ ! "$TERM" =~ screen  ]] && [[ ! "$TERM" =~ tmux  ]] && [ -z "$TMUX"  ]; then
+  exec tmux new-session -A -s main
+fi
